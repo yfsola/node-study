@@ -17,6 +17,7 @@ app.use(bodyParser())
 app.use(session(app));
 
 app.use((ctx, next) => {
+  console.log(ctx.url,'url')
   if(ctx.url.indexOf('login') > -1) {
     next()
   } else {
@@ -31,24 +32,24 @@ app.use((ctx, next) => {
   }
 })
 
-router.post('/login', async (ctx) => {
+router.post('/users/login', async (ctx) => {
   const {body} = ctx.request
-  console.log(body,'body')
   //设置session
   ctx.session.userinfo = body.username
+  console.log(ctx.session.userinfo,'userinfo')
   ctx.body = {
     message: '登录成功'
   }
 })
 
-router.post('/logout', async (ctx) => {
+router.post('/users/logout', async (ctx) => {
   delete ctx.session.userinfo
   ctx.body = {
     message: '登出系统'
   }
 })
 
-router.get('/getUser', async (ctx) => {
+router.get('/users/getUser', async (ctx) => {
   ctx.body = {
     message: '获取数据成功',
     userinfo: ctx.session.userinfo

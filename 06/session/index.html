@@ -10,7 +10,7 @@
 <body>
   <div id="app">
     <div>
-      <input type="text" v-model="usernmae"><br>
+      <input type="text" v-model="username"><br>
       <input type="password" v-model="password">
     </div>
 
@@ -38,23 +38,23 @@
     var app = new Vue({
       el: '#app',
       data: {
-        usernmae: 'sola',
+        username: 'sola',
         password:  'sola'
       },
       methods: {
         async login() {
-          await axios.post('/login', {
+          await axios.post('/users/login', {
             username: this.username,
             password: this.password
           })
         },
 
         async logout() {
-          await axios.post('/logout')
+          await axios.post('/users/logout')
         },
 
         async getUser() {
-          await axios.get('getUser')
+          await axios.get('/users/getUser')
         }
       },
     })

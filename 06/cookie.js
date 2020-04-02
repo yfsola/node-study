@@ -19,7 +19,7 @@ http.createServer((req,res) => {
     res.end('come back')
     const  pattern = new RegExp(`${sessionKey}=([^;]+);?\s*`)
     const sid = pattern.exec(cookie)[1]
-    console.log('session',sid,session,session[sid])
+    console.log('session',sid,session[sid])
   } else {
       const sid = (Math.random() * 9999999).toFixed()
       //设置cookie
