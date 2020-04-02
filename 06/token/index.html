@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>token应用</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div>
+            <input type="text" v-model="username"><br>
+            <input type="password" v-model="password">
+        </div>
+        <div>
+            <button @click="login">Login</button>
+            <button @click="logout">Logout</button>
+            <button @click="getUser">GetUser</button>
+        </div>
+    
+        <div>
+            <button @click="logs = []">Clear Log</button>
+        </div>
+    
+        <ul>
+            <li v-for="(log,idx) in logs" :key="idx">
+                {{log}}
+            </li>
+        </ul>
+    </div>
+    
+    <script>
+        axios.interceptors.request.use(
+            config => {
+            const token = window.sessionStorage.getItem("token");
+            if (token) {
+                // 判断是否存在token，如果存在的话，则每个http header都加上token
+                // Bearer是JWT的认证头部信息
+                config.headers.common["Authorization"] = "Bearer " + token;
+            }
+            return config;
+            },
+            err => {
+            return Promise.reject(err);
+            }
+        );
+
+        axios.interceptors.response.use(
+            response => {
+                app.logs.push(JSON.stringify(response.data));
+                return response;
+            },
+            err => {
+                app.logs.push(JSON.stringify(err.data));
+                return Promise.reject(err);
+            }
+        );
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                username: 'sola',
+                password: 'sola',
+                logs: []
+            },
+            methods: {
+                login: async function() {
+                    const res = await axios.post('/users/login-token', {
+                        username: this.username,
+                        password: this.password
+                    });
+                    sessionStorage.setItem('token',res.data.token)
+                },
+                logout: async function() {
+                    sessionStorage.removeItem('token')
+                },
+                getUser: async function() {
+                    await axios.get('/getUser-token');
+                }
+            }
+        })
+    </script>
+    
+</body>
+</html>
